@@ -175,15 +175,15 @@ namespace MuSeoun_Engine
 						t[i]->Hide();
 						if (scoreR < 250)
 						{
-							scoreR += 250;
+							scoreR += 50;
 						}
 						else if (scoreR >= 250 && scoreG < 250)
 						{
-							scoreG += 250;
+							scoreG += 50;
 						}
 						else if(scoreR >= 250 && scoreG >= 250 && scoreB < 250)
 						{
-							scoreB += 250;
+							scoreB += 50;
 							if (scoreR >= 250 && scoreG >= 250 && scoreB >= 250)
 							{
 								gameClear = true;

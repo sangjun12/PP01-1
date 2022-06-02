@@ -6,7 +6,7 @@ using namespace std;
 class Boom : public Object
 {
 private:
-	const double speed = 10.0f;
+	const double speed = 15.0f;
 public:
 	double length;
 	bool isOn;
