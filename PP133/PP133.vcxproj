@@ -142,6 +142,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Image.hpp" />
     <ClInclude Include="Item.hpp" />
     <ClInclude Include="Boom.hpp" />
     <ClInclude Include="MGameLoop.hpp" />
@@ -151,6 +152,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\source\repos\5th11\Project4\gameOver.bmp" />
+    <Image Include="..\..\..\..\gameClear.bmp" />
+    <Image Include="..\..\..\..\gC.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

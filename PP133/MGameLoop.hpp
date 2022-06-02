@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <chrono>
 #include <string>
 #include <iostream>
@@ -16,7 +17,7 @@ namespace MuSeoun_Engine
 	{
 	private:
 		bool _isGameRunning, gameOver, gameClear;
-		//MConsoleRenderer cRenderer;
+		
 		MWindowUtil* cWindow;
 		chrono::system_clock::time_point startRenderTimePoint;
 		chrono::duration<double> renderDuration;
@@ -28,8 +29,9 @@ namespace MuSeoun_Engine
 		int scoreR = 0;
 		int scoreG = 0;
 		int scoreB = 0;
+		Image* gameOverImg = new Image("gameOver.bmp");
+		Image* gameClearImg = new Image("gameClear.bmp");
 
-		//int score, scoreCount;
 		int key;
 		double deltaTime;
 	public:
@@ -40,8 +42,7 @@ namespace MuSeoun_Engine
 			renderDuration = chrono::system_clock::now() - startRenderTimePoint;
 			gameOver = false;
 			gameClear = false;
-			int score = 0;
-			//scoreCount = 0;
+			
 			for (int i = 0; i < itemSize; i++)
 			{
 				t[i] = new Item();
@@ -79,9 +80,9 @@ namespace MuSeoun_Engine
 		void Release()
 		{
 			delete(p);
-			for (int i = 0; i < boomSize; i++)
-				delete(t[i]);
 			for (int i = 0; i < itemSize; i++)
+				delete(t[i]);
+			for (int i = 0; i < boomSize; i++)
 				delete(b[i]);
 			delete(cWindow);
 		}
@@ -89,8 +90,9 @@ namespace MuSeoun_Engine
 		{
 			key = cWindow->FindKey();
 			
-			if (gameOver)
+			if (gameOver || gameClear)
 			{
+				
 				if (key == GLFW_KEY_R)
 				{
 					for (int i = 0; i < itemSize; i++)
@@ -106,10 +108,12 @@ namespace MuSeoun_Engine
 					scoreR = 0;
 					p->Reset();
 					gameOver = false;
+					gameClear = false;
 				}
 			}
 			else if(!gameOver)
 			{
+				cWindow->GameStartscreen();
 				if (key == GLFW_KEY_LEFT)
 				{
 					p->Left(0.3);
@@ -119,40 +123,17 @@ namespace MuSeoun_Engine
 					p->Right(0.3);
 				}
 			}
-			else if (gameClear)
-			{
-				if (key == GLFW_KEY_R)
-				{
-					for (int i = 0; i < itemSize; i++)
-					{
-						t[i]->Hide();
-					}
-					for (int i = 0; i < boomSize; i++)
-					{
-						b[i]->Hide();
-					}
-					scoreB = 0;
-					scoreG = 0;
-					scoreR = 0;
-					p->Reset();
-					gameClear = false;
-				}
-			}
+			
 		}
 		void Update()
 		{
-			
 			cWindow->WindowEvent();
 			if (cWindow->isEnd())
 				_isGameRunning = false;
 
-			if (!gameOver)
+			if (!gameOver && !gameClear)
 			{ 	
-				/*if (scoreR == 250 && scoreG == 250 && scoreB == 250)
-				{
-					gameClear = true;
-				}*/
-				for (int i = 0; i < itemSize; i++)//삭제
+				for (int i = 0; i < itemSize; i++)
 				{
 					if (t[i]->isOn)
 					{
@@ -206,12 +187,13 @@ namespace MuSeoun_Engine
 							if (scoreR >= 250 && scoreG >= 250 && scoreB >= 250)
 							{
 								gameClear = true;
+								
 							}
 						}
 					}
 				}
 				
-				for (int i = 0; i < boomSize; i++)//삭제
+				for (int i = 0; i < boomSize; i++)
 				{
 					if (b[i]->isOn)
 					{
@@ -250,7 +232,10 @@ namespace MuSeoun_Engine
 				for (int i = 0; i < boomSize; i++)
 				{
 					if (b[i]->isOn && b[i]->Collider(p))
+					{
 						gameOver = true;
+						
+					}
 				}
 			}
 
@@ -258,12 +243,11 @@ namespace MuSeoun_Engine
 		void Render()
 		{
 			cWindow->Clear();
-
-			if (!gameOver)
+			if (!gameOver && !gameClear)
 			{
-				
+
 				cWindow->PrintRectangle(p->x, p->y, 0, 0, 0);
-				cWindow->PrintRectangle1(p->x, p->y, scoreR, scoreG, scoreB);
+				cWindow->PrintcoreRectangle(p->x, p->y, scoreR, scoreG, scoreB);
 				
 				for (int i = 0; i < boomSize; i++)
 				{
@@ -275,6 +259,14 @@ namespace MuSeoun_Engine
 					if (t[i]->isOn)
 						cWindow->PrintRectangle(t[i]->x, t[i]->y, 255, 0, 0);
 				}
+			}
+			if(gameOver)
+			{
+				cWindow->GameOverscreen(gameOverImg, GL_RED, -0.8, 0.8, -0.05, 0.25);;
+			}
+			if (gameClear)
+			{
+				cWindow->GameClearscreen(gameClearImg, GL_GREEN, -0.8, 0.8, -0.05, 0.25);;
 			}
 
 			renderDuration = chrono::system_clock::now() - startRenderTimePoint;
